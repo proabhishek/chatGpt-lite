@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGpt</title>
+    <style>
+        .solution img{
+            width: 200px;
+        }
+        .hide{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+        <textarea name="question" id="question" cols="30" rows="10"></textarea> <br>
+        <button id="submit">Submit</button>
+
+        <div class="solution">
+
+        </div>
+
+        <div class="speechTest hide">
+               <form class="speechForm">
+                     <input type="text" name="speech" id="speech" placeholder="Enter your Token">
+                     <input type="submit" value="Submit">
+               </form>
+        </div>
+
+        <script>
+
+        let data = localStorage.getItem("files")
+        data = JSON.parse(data)
+
+        let submit = document.querySelector("#submit")
+        let question = document.querySelector("#question")
+        let solution = document.querySelector(".solution")
+        let speechTest = document.querySelector(".speechTest")
+        let speechForm = document.querySelector(".speechForm")
+
+     let questionBank = [
+       {question: "What is a dog" , answer: "Dog is a animal with 4 legs", imageLink: "./dog.jpeg"},
+        {question: "What is a cat" , answer: "Cat is a animal with 4 legs", imageLink: "./cat.jpeg"},
+        {question: "What is a laptop" , answer: "Laptop is a machine", imageLink: "./laptop.jpeg"},
+       ]
+
+        submit.addEventListener("click", answer)
+
+        function answer(){
+             let user_question = question.value
+
+             for(let t of questionBank){
+                    if(user_question == t.question){
+                        let para = document.createElement("p")
+                        para.innerHTML = t.answer
+                        para.className = "siri-text"
+                        solution.appendChild(para)
+                        let img = document.createElement("img")
+                        img.src = t.imageLink
+                        solution.appendChild(img)
+                        speechTest.classList.remove("hide")
+                        speechForm.addEventListener("submit", speech)
+                    }
+
+             }
+        }
+        
+        function speech(e){
+             e.preventDefault()
+             let token = document.querySelector("#speech").value
+             let siri_text = document.querySelector(".siri-text")
+             let siri = new SpeechSynthesisUtterance()
+             siri.lang = "en-US"
+             siri.volume = 1
+             siri.text= siri_text.innerHTML
+
+             speechSynthesis.speak(siri)
+             
+        }
+
+
+
+        </script>
+</body>
+</html>

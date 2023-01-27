@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Page</title>
+</head>
+<body>
+
+      <p class="message"></p>
+    <form class="signup">
+        <div>
+        <label for="name">Name: </label> <br>
+        <input type="text" name="name" id="name" placeholder="Enter your name">
+        </div> <br>
+        <div class="emailArea">
+        <label for="email">Email: </label><br>
+        <input type="text" name="email" id="email" placeholder="Enter your Email">
+        </div> <br>
+        <div class="passwordArea">
+        <label for="password">Password: </label> <br>
+        <input type="password" name="password" id="password" placeholder="Enter your password"
+        value="@Abhi123"
+        >
+        </div> <br>
+        <div class="CpasswordArea">
+        <label for="Cpassword">Confirm Password: </label><br>
+        <input type="password" name="Cpassword" id="Cpassword" placeholder="Confirm your password"
+        value="@Abhi123"
+        >
+        </div> <br>
+        <div class="submit">
+         <input type="submit">
+        </div>
+     
+    </form>
+
+
+    <script>
+        let signup_form = document.querySelector(".signup")
+        let input_name = document.querySelector("#name")
+        let input_email = document.querySelector("#email")
+        let input_password = document.querySelector("#password")
+        let input_confirm_password = document.querySelector("#Cpassword")
+        let message = document.querySelector(".message")
+
+        signup_form.addEventListener("submit", validateForm)
+         let arr = []
+         let id = 0
+        function validateForm(e){
+            e.preventDefault()
+            let name = input_name.value.trim()
+            let email = input_email.value
+            let password = input_password.value
+            let confirm_password= input_confirm_password.value
+
+             if(name.indexOf(" ") == -1){ // Ram Kumar
+                message.innerHTML = "Name should be atleast 2 words"
+                message.style.color = "red"
+             }
+             else if(email.includes("@") == false){
+                message.innerHTML = "Email should have @ option"
+                message.style.color = "red"
+             }
+             else if(validatePassword(password, name,email) == false){
+                message.innerHTML = "Password is not valid"
+                message.style.color = "red"
+             }
+             else if(password !=confirm_password){
+                message.innerHTML = "Password and confirm password should be same"
+                message.style.color = "red"
+             }
+
+             else if(emailExists(email) == false){
+                message.innerHTML = "Email already exists"
+                message.style.color = "red"
+             }
+
+             else{
+                message.innerHTML = "Form successfully submitted"
+                message.style.color = "green"
+                 let user_data = {id: ++id,name, email, password}
+                 arr.push(user_data)
+                 // localstorage, json
+                 let data = JSON.stringify(arr)
+                 localStorage.setItem("files", data)
+                 input_name.value = ""
+                 input_email.value= ""
+                 input_password.value= ""
+                 input_confirm_password.value= ""
+                 window.location.href="/login.html"
+             }
+        }
+
+        function validatePassword(password, name, email){ // @Abhi123
+           let cl = 0 , sl = 0, nc = 0, sc = 0 
+            for(let t of password){
+                if(t>="A" && t<="Z"){
+                    cl++
+                }
+                else if(t>="a" && t<="z"){
+                    sl++
+                }
+                else if(t>="0" && t<="9"){
+                    nc++
+                }
+                else{
+                    sc++
+                }
+            }
+
+            if(cl>=1 && sl>=1 && nc>=1 && sc>=1 && password!=name && password!=email){
+                    return true
+            }
+
+            return false
+
+
+        }
+         
+        function emailExists(email){
+           for(let t of arr){
+              if(t.email == email){
+                return false
+              }
+           }
+           return true
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+    

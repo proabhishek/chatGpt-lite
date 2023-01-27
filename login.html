@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <p class="message"></p>
+    <form class="login">
+        
+        <div class="emailArea">
+        <label for="email">Email: </label><br>
+        <input type="text" name="email" id="email" placeholder="Enter your Email">
+        </div> <br>
+        <div class="passwordArea">
+        <label for="password">Password: </label> <br>
+        <input type="password" name="password" id="password" placeholder="Enter your password"
+        value="@Abhi123"
+        >
+        </div> <br>
+        
+        </div> <br>
+        <div class="submit">
+         <input type="submit">
+        </div>
+
+        <script>
+            // //  console.log(arr)
+            let data = localStorage.getItem("files")
+            data = JSON.parse(data)
+ 
+            let login_form = document.querySelector(".login")
+            let input_email = document.querySelector("#email")
+            let input_password = document.querySelector("#password")
+            let message = document.querySelector(".message")
+             
+            login_form.addEventListener("submit", authectiateUser)
+
+              function authectiateUser(e){
+                e.preventDefault()
+
+                let email = input_email.value
+                let password = input_password.value
+                let cases = ["Email is not registered", "Password is incorrect", "Login Successful"] 
+
+                let result = checkLogin(email, password)
+
+                if(result==0 || result ==1){
+                    message.innerHTML = cases[result]
+                    message.style.color = "red"
+                }
+                else if(result == 2){
+                    message.innerHTML = cases[result]
+                    message.style.color = "green"
+                    generateToken(email)
+                    window.location.href = "chatgpt.html"
+                }
+            
+            }
+
+            function  checkLogin(email, password){
+              
+                 let flag = 0
+
+                for(let t of data){ // t = {id: 1, name: "Ram Kumar", email: "", password: ""}
+                    if(t.email == email){
+                        if(t.password == password){
+                            return 2
+                        }
+                        else{
+                            return 1
+                        }
+                        flag = 1
+                    }
+                }
+                if(flag == 0){
+                    return 0
+                }
+                
+            }
+                
+            function generateToken(email){
+                let capital = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                let small = "abcdefghijklmnopqrstuvwxyz"
+                let numbers = "0123456789"
+
+                let letters = capital + small + numbers
+                 let token = ""
+                for(let i = 0; i<=9; i++){
+                   let randomIndex = Math.floor(Math.random()*letters.length)
+                   token = token + letters[randomIndex]
+                }
+                // check if token is already present
+                let flag = 0
+                for(let t of data){ // t = {id: 1, name: "Ram Kumar", email: "", password: "", token=""}
+                    if(t.token == token){
+                        flag = 1
+                    }
+                }
+                // if token is not present then add it to the user
+                if(flag == 0){
+                     for(let t of data){ // t = {id: 1, name: "Ram Kumar", email: "", password: "", token=""}
+                        if(t.email == email){
+                            t["token"] = token
+                            console.log(token)
+                            console.log(data)
+                            localStorage.setItem("files", JSON.stringify(data))
+                            return 
+                        }
+                }
+            }
+                  // if token is present then generate another token
+                else if(flag == 1){
+                    generateToken(email)
+                }
+
+
+                
+            }
+        </script>
+     
+    </form>
+</body>
+</html>
